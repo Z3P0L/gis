@@ -2,7 +2,7 @@ import config from '../config/env.js'
 import { getRequest } from '../services/request.js'
 
 export const getGeoData = async (req, res) => {
-	const { term, city, country } = req.query
+	const { term, city, country, limit } = req.query
 
 	if (!term) {
 		return res.status(400).json({ error: 'The parameter "term" is required.' })
@@ -13,8 +13,9 @@ export const getGeoData = async (req, res) => {
 			q: `${term}, ${city || ''}, ${country || ''}`.trim(),
 			format: 'json',
 			addressdetails: 1,
-			limit: 5
 		}
+
+		if (limit) params.limit = limit
 
 		const rawResults = await getRequest(config.OPENSTREET_BASE_URL, params)
 
